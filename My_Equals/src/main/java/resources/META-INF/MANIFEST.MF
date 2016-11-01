@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: lib\slf4j-api-1.7.13.jar lib\logkit-2.0.jar lib\json-20160
+ 810.jar
+Main-Class: com.susie.action.equals.Main
+

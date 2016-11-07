@@ -1,19 +1,14 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="EqualJson">
+  <artifact type="jar" name="EqualJson">
     <output-path>$PROJECT_DIR$/out/artifacts/EqualJson</output-path>
-    <root id="archive" name="EqualJson.jar">
-      <element id="archive" name="MyJmeter.jar">
-        <element id="directory" name="META-INF">
-          <element id="file-copy" path="$PROJECT_DIR$/My_Equals/src/main/resources/META-INF/MANIFEST.MF" />
-        </element>
-        <element id="module-output" name="MyJmeter" />
-        <element id="module-output" name="My_Equals" />
+    <root id="archive" name="main.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/My_Equals/src/main/resources/META-INF/MANIFEST.MF" />
       </element>
-      <element id="directory" name="lib">
-        <element id="library" level="project" name="Maven: logkit:logkit:2.0" />
-        <element id="library" level="project" name="Maven: org.json:json:20160810" />
-        <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.13" />
-      </element>
+      <element id="module-output" name="My_Equals" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20160810/json-20160810.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/logkit/logkit/2.0/logkit-2.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

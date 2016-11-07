@@ -22,14 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="Definition" />
         <module name="My_Equals" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Definition" target="1.5" />
+      <module name="main" target="1.5" />
       <module name="My_Equals" target="1.5" />
-      <module name="MyJmeter" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

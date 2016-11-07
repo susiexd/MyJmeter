@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MyJmeter.iml" filepath="$PROJECT_DIR$/MyJmeter.iml" />
       <module fileurl="file://$PROJECT_DIR$/My_Equals/My_Equals.iml" filepath="$PROJECT_DIR$/My_Equals/My_Equals.iml" />
+      <module fileurl="file://$PROJECT_DIR$/main.iml" filepath="$PROJECT_DIR$/main.iml" />
     </modules>
   </component>
 </project>

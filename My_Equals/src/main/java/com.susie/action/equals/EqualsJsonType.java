@@ -18,7 +18,7 @@ public class EqualsJsonType {
 	}
     private String fatherName = "";
 	private String equalsJsonType(JSONObject standardJson, JSONObject responseJson) {//输入两个json，判断第一个里面的所有字段在第二个中的类型是否相同
-		String err_message = ""; 
+		String err_message = "";
 		Iterator it = standardJson.keys(); // 储存所有要验证的Key
 	     while (it.hasNext()) {
 	          String key = (String) it.next();
@@ -48,20 +48,21 @@ public class EqualsJsonType {
 							if(respKeyType.equals("org.json.JSONArray")){
 								JSONArray array1 = standardJson.getJSONArray(key); // 获取需要对比的两个数组
 								JSONArray array2 = responseJson.getJSONArray(key);
-								JSONObject standardObject = array1.getJSONObject(0); // 取数组的第一个元素作为对照模板
-								String err_message1 = "";
-								fatherName += key +"->";
-								for(int i=0; i<array2.length(); i++){  // 遍历array2的每一个项
-									String result = equalsJsonType(standardObject,array2.getJSONObject(i));
-									if(!result.equals("")){ //当前项不匹配，保存错误信息
-										err_message1 += result + "（Index=" + i +")";
+								if (array1.length() > 0 ) {
+									JSONObject standardObject = array1.getJSONObject(0); // 取数组的第一个元素作为对照模板
+									String err_message1 = "";
+									fatherName += key +"->";
+									for(int i=0; i<array2.length(); i++){  // 遍历array2的每一个项
+										String result = equalsJsonType(standardObject,array2.getJSONObject(i));
+										if(!result.equals("")){ //当前项不匹配，保存错误信息
+											err_message1 += result + "（Index=" + i +")";
+										}
+									}
+									fatherName = fatherName.replace(key+"->","");
+									if(!err_message1.equals("")){
+										err_message += "\n------ArrayError : " + fatherName + key + err_message1 + "\n";
 									}
 								}
-								fatherName = fatherName.replace(key+"->","");
-                                if(!err_message1.equals("")){
-									err_message += "\n------ArrayError : " + fatherName + key + err_message1 + "\n";
-								}
-
 							}
 							else {  //响应不是数组输出错误信息
 								String log1 = "------Type Error : "  + fatherName + key + " is " + respKeyType + " (should be " + thisKeyType + ")";
@@ -89,7 +90,7 @@ public class EqualsJsonType {
 	    }
 	    return false;
 	}
-	
+
 	public String getMessage() {
 		return message;
 	}
@@ -97,5 +98,5 @@ public class EqualsJsonType {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
 }

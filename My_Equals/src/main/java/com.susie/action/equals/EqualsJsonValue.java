@@ -63,7 +63,17 @@ public class EqualsJsonValue {
                         }
                     } else if (thisKeyType.equals("org.json.JSONArray")) { // 标准是Array类型
                         if (respKeyType.equals("org.json.JSONArray")) { // 响应也是数组
-                            String err_message1 = arrayCompare(thisKeyValue, respKeyValue); // 两个数组对比
+                            String err_message1 ="";
+                            System.out.println("key:" + key);
+                            System.out.println("keyType:" + key.getClass().getName());
+                            if(key.equals("order_items")){//商品类型就特殊比较
+                                fatherName += key + "->";
+                                err_message1 = arrayCompare2(thisKeyValue, respKeyValue);
+                                fatherName = fatherName.replace(key + "->", "");
+                            }
+                            else{
+                                err_message1 = arrayCompare(thisKeyValue, respKeyValue); // 两个数组对比
+                            }
                             if(!err_message1.equals("")){ // 数组不匹配:保存到错误信息里面
                                 err_message = (err_message + "\n------ArrayError : " + fatherName + key + "\n" + err_message1);
                             }
@@ -85,8 +95,9 @@ public class EqualsJsonValue {
     public Boolean respValueAssertion(String standardData, String resData) { //输入标准响应，转为json并调用比较函数，得到断言结果
         JSONObject standardJson = new JSONObject(standardData);
         JSONObject jo = new JSONObject(resData);
-        JSONObject responseJson = jo.getJSONObject("data");
-        message = equalsJsonValue(standardJson, responseJson);
+        //JSONObject responseJson = jo.getJSONObject("data");
+        //message = equalsJsonValue(standardJson, responseJson);
+        message = equalsJsonValue(standardJson, jo);
         log.info(message);
         if (message.replaceAll(" ", "").equals("")) {    //如果错误信息是空，说明断言结果通过
             return true;
@@ -124,6 +135,47 @@ public class EqualsJsonValue {
             }
         }
         for (j = 0; j < array2.length(); j++){ //遍历array2，未被匹配的是多余的项
+            String item = array2.get(j).toString();
+            if(!item.equals("hasMatched")){
+                result += "---------------- " + item + " Unnecessary.（Index=" + j +")";
+            }
+            if(j==(array2.length()-2)){
+                result += "\n";
+            }
+        }
+        return result;
+    }
+
+    public String arrayCompare2(String string1, String string2) { // 商品数组A,B比较，考虑相同goods_item_id元素，返回信息包括B中商品
+        JSONArray array1 = new JSONArray(string1); // 转化为数组
+        JSONArray array2 = new JSONArray(string2);
+        String keyItem = "goods_item_id";
+        String result = "";
+        int i = 0;
+        int j = 0;
+        for (; i < array1.length(); i++) { // 遍历array1
+            JSONObject object1 = (JSONObject) array1.get(i); // array1的元素object1
+            String key_value1 = object1.get(keyItem).toString(); //得到规格id
+
+            for (; j < array2.length(); j++) { // 遍历array2有没有该规格，有就比较其他属性
+                if (array2.get(j) != "hasMatched") {
+                    JSONObject object2 = (JSONObject) array2.get(j);
+                    String key_value2 = object1.get(keyItem).toString();
+                    if(key_value1.equals(key_value2)){  // 规格一致，比较其他属性是否一致
+                        String itemExist = equalsJsonValue(object1, object2);
+                        array2.put(j, "hasMatched");  //比较完毕，标志该元素为匹配
+                        if (!itemExist.replaceAll(" ", "").equals("")) {  // 若该商品详情不完全匹配，保存错误信息
+                            result += "---------->>商品有误，goods_item_id: " + key_value1 +itemExist;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (j == array2.length()) { // 遍历结束没有找到匹配的项则该项缺失
+                result += "\n---------->>商品缺失，goods_item_id: " + key_value1 + " Not found.\n";
+            }
+        }
+        for (j = 0; j < array2.length(); j++){ // 遍历array2，未被匹配的是多余的项
             String item = array2.get(j).toString();
             if(!item.equals("hasMatched")){
                 result += "---------------- " + item + " Unnecessary.（Index=" + j +")";

@@ -94,10 +94,8 @@ public class EqualsJsonValue {
 
     public Boolean respValueAssertion(String standardData, String resData) { //输入标准响应，转为json并调用比较函数，得到断言结果
         JSONObject standardJson = new JSONObject(standardData);
-        JSONObject jo = new JSONObject(resData);
-        //JSONObject responseJson = jo.getJSONObject("data");
-        //message = equalsJsonValue(standardJson, responseJson);
-        message = equalsJsonValue(standardJson, jo);
+        JSONObject responseJson = new JSONObject(resData);
+        message = equalsJsonValue(standardJson, responseJson);
         log.info(message);
         if (message.replaceAll(" ", "").equals("")) {    //如果错误信息是空，说明断言结果通过
             return true;

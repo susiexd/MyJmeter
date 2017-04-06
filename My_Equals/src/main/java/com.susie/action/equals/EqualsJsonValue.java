@@ -74,7 +74,7 @@ public class EqualsJsonValue {
                             else{
                                 err_message1 = arrayCompare(thisKeyValue, respKeyValue); // 两个数组对比
                             }
-                            if(!err_message1.equals("")){ // 数组不匹配:保存到错误信息里面
+                            if(!err_message1.replaceAll("\n", "").equals("")){ // 数组不匹配:保存到错误信息里面
                                 err_message = (err_message + "\n------ArrayError : " + fatherName + key + "\n" + err_message1);
                             }
                         } else { //响应并非Array类型：保存错误信息

@@ -54,9 +54,10 @@ public class EqualsJsonValue {
 
                     if (thisKeyType.equals("org.json.JSONObject")) {
                         if (respKeyType.equals("org.json.JSONObject")) { //都是object：递归判断
-                            fatherName += key + "->";
+                            String fatherName2 = fatherName;
+                            fatherName = fatherName + key + "->";
                             err_message += equalsJsonValue(standardJson.getJSONObject(key), responseJson.getJSONObject(key)); //!!进入递归时，保存当前错误信息
-                            fatherName = fatherName.replace(key + "->", "");
+                            fatherName = fatherName2;
                         } else { //响应并非object类型：保存错误信息
                             String log1 = "------ValueError : " + fatherName + key + " is " + respKeyValue + " (should be " + thisKeyValue + ")";
                             err_message = (err_message + "\n" + log1);
@@ -64,18 +65,30 @@ public class EqualsJsonValue {
                     } else if (thisKeyType.equals("org.json.JSONArray")) { // 标准是Array类型
                         if (respKeyType.equals("org.json.JSONArray")) { // 响应也是数组
                             String err_message1 ="";
-                            System.out.println("key:" + key);
-                            System.out.println("keyType:" + key.getClass().getName());
-                            if(key.equals("order_items")){//商品类型就特殊比较
+                            if(key.equals("packages")){//12.20 package类型特殊比较
+                                String fatherName2 = fatherName;
+                                fatherName += key + "->";
+                                JSONArray array1 = standardJson.getJSONArray(key); // 获取需要对比的两个数组
+                                JSONArray array2 = responseJson.getJSONArray(key);
+                                JSONObject package1 = array1.getJSONObject(0);
+                                JSONObject package2 = array2.getJSONObject(0);
+                                err_message += equalsJsonValue(package1, package2);
+                                fatherName = fatherName2;
+                            }
+                            else
+                            {if(key.equals("order_items")){//商品类型特殊比较
+                                String fatherName2 = fatherName;
                                 fatherName += key + "->";
                                 err_message1 = arrayCompare2(thisKeyValue, respKeyValue);
-                                fatherName = fatherName.replace(key + "->", "");
+//                                fatherName = fatherName.replace(key + "->", "");
+                                fatherName = fatherName2;
                             }
                             else{
                                 err_message1 = arrayCompare(thisKeyValue, respKeyValue); // 两个数组对比
                             }
                             if(!err_message1.replaceAll("\n", "").equals("")){ // 数组不匹配:保存到错误信息里面
-                                err_message = (err_message + "\n------ArrayError : " + fatherName + key + "\n" + err_message1);
+                                err_message = (err_message + "\n------ArrayError : " + fatherName + "\n" + err_message1);
+                            }
                             }
                         } else { //响应并非Array类型：保存错误信息
                             String log1 = "------ValueError : " + fatherName + key + " is " + respKeyValue + " (should be " + thisKeyValue + ")";
@@ -115,27 +128,28 @@ public class EqualsJsonValue {
         JSONArray array1 = new JSONArray(string1); // 转化为数组
         JSONArray array2 = new JSONArray(string2);
         String result = "";
+
         int i = 0;
         int j = 0;
         for (; i < array1.length(); i++) { // 遍历array1
-            JSONObject object1 = (JSONObject) array1.get(i); // array1的元素object1
-            for (; j < array2.length(); j++) { // 遍历array2有没有object1
+            String str1 = (String) array1.get(i).toString(); // array1的元素转换为字符串
+            for (j=0; j < array2.length(); j++) { // 遍历array2有没有str1
                 if (array2.get(j) != "hasMatched") {
-                    String itemExist = equalsJsonValue(object1, (JSONObject) array2.get(j));
-                    if (itemExist.replaceAll(" ", "").equals("")) {  // 若当前object匹配，标志为匹配并进行下一个判断
+                    String str2 = array2.get(j).toString();
+                    if (str1.equals(str2)) {  // 若当前元素匹配，标志为匹配并进行下一个判断
                         array2.put(j, "hasMatched");  //
                         break;
                     }
                 }
             }
             if (j == array2.length()) { // 遍历结束没有找到匹配的项则该项缺失
-                result += "---------------- " + object1.toString() + " Not found.\n";
+                result += "---------------- " + str1 + " Not found.\n";
             }
         }
         for (j = 0; j < array2.length(); j++){ //遍历array2，未被匹配的是多余的项
             String item = array2.get(j).toString();
             if(!item.equals("hasMatched")){
-                result += "---------------- " + item + " Unnecessary.（Index=" + j +")";
+                result += "---------------- " + item + " Unnecessary.（Index=" + j +")\n";
             }
             if(j==(array2.length()-2)){
                 result += "\n";
@@ -182,6 +196,7 @@ public class EqualsJsonValue {
                 result += "\n";
             }
         }
+
         return result;
     }
 

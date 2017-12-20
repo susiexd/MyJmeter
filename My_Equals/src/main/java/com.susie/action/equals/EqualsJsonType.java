@@ -57,10 +57,12 @@ public class EqualsJsonType {
 										err_message1 += result + "（Index=" + i +")";
 									}
 								}
-								fatherName = fatherName.replace(key+"->","");
-                                if(!err_message1.equals("")){
-									err_message += "\n------ArrayError : " + fatherName + key + err_message1 + "\n";
+//								fatherName = fatherName.replace(key+"->","");
+                                if(!err_message1.replaceAll(" ","").equals("")){
+//									err_message += "\n------ArrayError : " + fatherName + err_message1 + "\n";
+									err_message += fatherName + err_message1 + "\n";
 								}
+								fatherName = fatherName.replace(key+"->","");
 
 							}
 							else {  //响应不是数组输出错误信息
